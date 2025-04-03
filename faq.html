@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alcami Elements Product Gallery</title>
+    <link rel="stylesheet" href="styles/index.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "rail-white";
+      }
+
+      body {
+        background-color: #f9f9f9;
+        color: #322d2d;
+      }
+
+      .container {
+        display: flex;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .product-gallery {
+        flex: 1;
+        position: relative;
+      }
+
+      .main-image {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .thumbnails {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        justify-content: center;
+      }
+
+      .thumbnail {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        cursor: pointer;
+      }
+
+      .thumbnail.active {
+        background-color: #333;
+      }
+
+      .product-info {
+        flex: 1;
+        padding-left: 40px;
+      }
+
+      .product-title {
+        font-size: 32px;
+        margin-bottom: 10px;
+      }
+
+      .product-rating {
+        color: #ffc107;
+        margin-bottom: 15px;
+      }
+
+      .product-description {
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+
+      .flavor-selection {
+        margin-bottom: 30px;
+      }
+
+      .flavor-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #444;
+      }
+
+      .flavor-options {
+        display: flex;
+        gap: 20px;
+      }
+
+      .flavor-option {
+        text-align: center;
+        position: relative;
+      }
+
+      .flavor-option input[type="radio"] {
+        display: none;
+      }
+
+      .flavor-option label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .flavor-option span {
+        margin-top: 10px;
+        color: #666;
+      }
+
+      .flavor-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 8px;
+        border: 2px solid transparent;
+        padding: 5px;
+        transition: all 0.3s ease;
+      }
+
+      .flavor-option input[type="radio"]:checked + label .flavor-image {
+        border-color: #d4a76a;
+        box-shadow: 0 0 10px rgba(212, 167, 106, 0.5);
+      }
+
+      .subscription-options {
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+      }
+
+      .subscription-option {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        position: relative;
+      }
+
+      .subscription-option.active {
+        border-color: #d4a76a;
+        background-color: #fffaf0;
+      }
+
+      .subscription-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .subscription-title {
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .subscription-price {
+        display: flex;
+        align-items: baseline;
+      }
+
+      .current-price {
+        font-size: 24px;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      .original-price {
+        color: #999;
+        text-decoration: line-through;
+      }
+
+      .whats-included {
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      .package-details {
+        display: flex;
+        gap: 25px;
+        margin-bottom: 15px;
+      }
+
+      .package-option {
+        flex: 1;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 25px;
+        text-align: center;
+      }
+
+      .package-option img {
+        height: 80px;
+        margin-bottom: 10px;
+      }
+
+      .benefits-list {
+        list-style-type: none;
+      }
+
+      .benefits-list li {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+      }
+
+      .benefits-list li::before {
+        content: "✓";
+        color: #4caf50;
+        margin-right: 10px;
+        font-weight: bold;
+      }
+
+      .add-to-cart {
+        background-color: #6b7c5c;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 15px 25px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        transition: background-color 0.3s;
+      }
+
+      .add-to-cart:hover {
+        background-color: #596a4a;
+      }
+
+      .best-seller-badge {
+        position: absolute;
+        bottom: 30px;
+
+        background-color: #d4a76a;
+        color: white;
+        padding: 3px 3px;
+        border-radius: 4px;
+        font-size: 8px;
+        font-weight: bold;
+      }
+
+      .most-popular-tag {
+        position: absolute;
+        top: -12px;
+        right: 20px;
+        background-color: #d4a76a;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: bold;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .nav-arrows {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        transform: translateY(-50%);
+        z-index: 10;
+      }
+
+      .nav-arrow {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        font-size: 18px;
+      }
+
+      .nav-arrow.prev {
+        left: 10px;
+      }
+
+      .nav-arrow.next {
+        right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="product-gallery">
+        <div class="main-image-container">
+          <img
+            src="/assets/images/slider1.png"
+            alt="Alcami Elements Original Blend"
+            class="main-image"
+            id="main-product-image"
+          />
+        </div>
+
+        <div class="thumbnails">
+          <div class="thumbnail active" data-index="0"></div>
+          <div class="thumbnail" data-index="1"></div>
+          <div class="thumbnail" data-index="2"></div>
+          <div class="thumbnail" data-index="3"></div>
+        </div>
+
+        <div class="nav-arrows">
+          <div class="nav-arrow prev">&#10094;</div>
+          <div class="nav-arrow next">&#10095;</div>
+        </div>
+      </div>
+
+      <div class="product-info">
+        <h1 class="product-title">Alcami Elements</h1>
+        <div class="product-rating">
+          ★ ★ ★ ★ ★ <span>4.7 (999+ reviews)</span>
+        </div>
+        <p class="product-description">
+          Discover the ancient wisdom supported by modern science, all within
+          the synergy of Alcami Elements. Designed for those who aspire to
+          elevate every facet of life with awareness and intention.
+        </p>
+
+        <div class="flavor-selection">
+          <h2 class="flavor-title">Choose a flavor</h2>
+          <div class="flavor-options">
+            <div class="flavor-option">
+              <input
+                type="radio"
+                name="flavor"
+                id="original"
+                value="original"
+                checked
+              />
+              <label for="original">
+                <img
+                  src="/assets/images/slider1.png"
+                  alt="Original Flavor"
+                  class="flavor-image original-image"
+                />
+                <span>Original</span>
+              </label>
+              <div class="best-seller-badge">BEST SELLER</div>
+            </div>
+
+            <div class="flavor-option">
+              <input type="radio" name="flavor" id="matcha" value="matcha" />
+              <label for="matcha">
+                <img
+                  src="/assets/images/slider2-2.svg"
+                  ,
+                  alt="Matcha Flavor"
+                  class="flavor-image matcha-image"
+                />
+                <span>Matcha</span>
+              </label>
+            </div>
+
+            <div class="flavor-option">
+              <input type="radio" name="flavor" id="cacao" value="cacao" />
+              <label for="cacao">
+                <img
+                  src="/assets/images/slider3-3.svg"
+                  ,
+                  alt="Cacao Flavor"
+                  class="flavor-image cacao-image"
+                />
+                <span>Cacao</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="subscription-options">
+          <div class="subscription-option active">
+            <div class="most-popular-tag">Most Popular</div>
+            <div class="subscription-header">
+              <h3 class="subscription-title">Single Kit Subscription</h3>
+              <div class="subscription-price">
+                <span class="current-price">$37 USD</span>
+                <span class="original-price">$46</span>
+              </div>
+            </div>
+
+            <div class="whats-included">What's Included:</div>
+            <div class="package-details">
+              <div class="package-option">
+                <h4>Every 30 Days</h4>
+                <img src="/assets/images/kit2-2.svg" alt="Monthly Supply" />
+              </div>
+              <div class="package-option">
+                <h4>One Time (Free)</h4>
+                <img src="/assets/images/kit2.svg" alt="Free Items" />
+              </div>
+            </div>
+
+            <ul class="benefits-list">
+              <li>30 Servings Shipped Monthly</li>
+              <li>Free Golden Kit Gold Bottle + Spoon ($23 Value)</li>
+              <li>Free 60 Days Supply Of Alcami Shilajit ($78 Value)</li>
+              <li>50% OFF Shipping (Over $7-$10 In Savings)</li>
+              <li>Pause Or Cancel Anytime After 3 Months Minimum</li>
+              <li>90 Day Money Back Guarantee*</li>
+            </ul>
+          </div>
+
+          <div class="subscription-option">
+            <div class="subscription-header">
+              <h3 class="subscription-title">Double Kit Subscription</h3>
+              <div class="subscription-price">
+                <span class="current-price">$68 USD</span>
+                <span class="original-price">$83</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="subscription-option">
+            <div class="subscription-header">
+              <h3 class="subscription-title">Try Once</h3>
+              <div class="subscription-price">
+                <span class="current-price">$46 USD</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="add-to-cart">Add to Cart ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Product image galleries for each flavor
+        const productGalleries = {
+          original: [
+            "/assets/images/slider1.png",
+            "/assets/images/slider1.png",
+            "/assets/images/slider1.png",
+            "/assets/images/slider1.png",
+          ],
+          matcha: [
+            "/assets/images/slider2-2.svg",
+            "/assets/images/slider2-2.svg",
+            "/assets/images/slider2-2.svg",
+            "/assets/images/slider2-2.svg",
+          ],
+          cacao: [
+            "/assets/images/slider3-3.svg",
+            "/assets/images/slider3-3.svg",
+            "/assets/images/slider3-3.svg",
+            "/assets/images/slider3-3.svg",
+          ],
+        };
+
+        // Initialize product image
+        let currentFlavor = "original";
+        let currentImageIndex = 0;
+
+        // Set initial main image
+        updateMainImage();
+
+        // Handle flavor selection
+        $('input[name="flavor"]').change(function () {
+          currentFlavor = $(this).val();
+          currentImageIndex = 0;
+          updateMainImage();
+          updateThumbnailIndicators();
+        });
+
+        // Handle thumbnail clicks
+        $(".thumbnail").click(function () {
+          currentImageIndex = parseInt($(this).data("index"));
+          updateMainImage();
+          updateThumbnailIndicators();
+        });
+
+        // Handle navigation arrows
+        $(".nav-arrow.prev").click(function () {
+          navigateGallery(-1);
+        });
+
+        $(".nav-arrow.next").click(function () {
+          navigateGallery(1);
+        });
+
+        // Handle subscription option selection
+        $(".subscription-option").click(function () {
+          $(".subscription-option").removeClass("active");
+          $(this).addClass("active");
+        });
+
+        // Function to update main product image
+        function updateMainImage() {
+          const gallery = productGalleries[currentFlavor];
+
+          if (gallery && gallery.length > 0) {
+            $("#main-product-image").attr("src", gallery[currentImageIndex]);
+          }
+        }
+
+        // Function to update thumbnail indicators
+        function updateThumbnailIndicators() {
+          $(".thumbnail").removeClass("active");
+          $(`.thumbnail[data-index="${currentImageIndex}"]`).addClass("active");
+        }
+
+        // Function to navigate through the gallery
+        function navigateGallery(direction) {
+          const gallery = productGalleries[currentFlavor];
+
+          if (gallery && gallery.length > 0) {
+            currentImageIndex =
+              (currentImageIndex + direction + gallery.length) % gallery.length;
+            updateMainImage();
+            updateThumbnailIndicators();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
