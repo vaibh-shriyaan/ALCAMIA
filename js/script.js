@@ -68,12 +68,12 @@ $(document).ready(function () {
   //FQAs
   $(".accordion-content").css("max-height", "0px");
 
-  // Handle accordion button click
+  // Handling accordion button click
   $(".accordion-button").click(function () {
     const $content = $(this).next(".accordion-content");
     const $plusIcon = $(this).find(".plus-icon");
 
-    // Close all other accordion items
+    // Closing all other accordion items
     $(".accordion-button")
       .not(this)
       .each(function () {
@@ -81,7 +81,7 @@ $(document).ready(function () {
         $(this).next(".accordion-content").css("max-height", "0px");
       });
 
-    // Toggle current accordion item
+    // Toggling current accordion item
     if ($content.css("max-height") === "0px") {
       $content.css("max-height", $content[0].scrollHeight + "px");
       $plusIcon.text("−");
@@ -89,19 +89,6 @@ $(document).ready(function () {
       $content.css("max-height", "0px");
       $plusIcon.text("+");
     }
-  });
-
-  // Handle "Get in touch" button click
-  $(".get-in-touch").click(function () {
-    // Add your contact form logic here
-    console.log("Get in touch button clicked");
-  });
-
-  // Handle "See All FAQ's" link click
-  $(".see-all").click(function (e) {
-    e.preventDefault();
-    // Add your logic to show all FAQs or navigate to a full FAQ page
-    console.log("See All FAQs link clicked");
   });
 
   //product cart
@@ -126,14 +113,12 @@ $(document).ready(function () {
     ],
   };
 
-  // Initialize product image
   let currentFlavor = "original";
   let currentImageIndex = 0;
 
-  // Set initial main image
   updateMainImage();
 
-  // Handle flavor selection
+  // Handling flavor selection
   $('input[name="flavor"]').change(function () {
     currentFlavor = $(this).val();
     currentImageIndex = 0;
@@ -141,14 +126,14 @@ $(document).ready(function () {
     updateThumbnailIndicators();
   });
 
-  // Handle thumbnail clicks
+  // Handling thumbnail clicks
   $(".thumbnail").click(function () {
     currentImageIndex = parseInt($(this).data("index"));
     updateMainImage();
     updateThumbnailIndicators();
   });
 
-  // Handle navigation arrows
+  // Handling navigation arrows
   $(".nav-arrow.prev").click(function () {
     navigateGallery(-1);
   });
@@ -157,7 +142,7 @@ $(document).ready(function () {
     navigateGallery(1);
   });
 
-  // Handle subscription option selection
+  // Handling subscription option selection
   $(".subscription-option").click(function () {
     $(".subscription-option").removeClass("active");
     $(this).addClass("active");
@@ -189,4 +174,80 @@ $(document).ready(function () {
       updateThumbnailIndicators();
     }
   }
+
+  //testimonials
+  const $track = $(".testimonial-track");
+  const $slides = $(".testimonial-slide");
+  const $dots = $(".dot");
+  const slideCount = $slides.length;
+  let currentIndex = 0;
+
+  // Updating carousel position
+  function updateCarousel() {
+    const translateValue = -currentIndex * 100;
+    $track.css("transform", `translateX(${translateValue}%)`);
+
+    // Updating active dot
+    $dots.removeClass("active");
+    $dots.eq(currentIndex).addClass("active");
+  }
+
+  // Next slide
+  $(".next-button").click(function () {
+    if (currentIndex < slideCount - 1) {
+      currentIndex++;
+      updateCarousel();
+    }
+  });
+
+  // Previous slide
+  $(".prev-button").click(function () {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updateCarousel();
+    }
+  });
+
+  // Clicking on dots
+  $dots.click(function () {
+    currentIndex = $(this).data("index");
+    updateCarousel();
+  });
+
+  updateCarousel();
+
+  // Adding touch swipe functionality
+  let startX = 0;
+  let endX = 0;
+
+  $(".testimonial-carousel").on("touchstart", function (e) {
+    startX = e.originalEvent.touches[0].clientX;
+  });
+
+  $(".testimonial-carousel").on("touchmove", function (e) {
+    endX = e.originalEvent.touches[0].clientX;
+  });
+
+  $(".testimonial-carousel").on("touchend", function () {
+    const difference = startX - endX;
+    if (difference > 50 && currentIndex < slideCount - 1) {
+      // Swipe left
+      currentIndex++;
+      updateCarousel();
+    } else if (difference < -50 && currentIndex > 0) {
+      // Swipe right
+      currentIndex--;
+      updateCarousel();
+    }
+  });
+
+  // Auto sliding every 5 seconds
+  setInterval(function () {
+    if (currentIndex < slideCount - 1) {
+      currentIndex++;
+    } else {
+      currentIndex = 0;
+    }
+    updateCarousel();
+  }, 5000);
 });
